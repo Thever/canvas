@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>canvas绘制视频</title>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600">
+        您的浏览器不支持canvas标签
+    </canvas>
+    <video width="800" height="" controls="controls" src="video/video.mp4"></video>
+    <script>
+        //  1.获取画布
+        let canvas = document.querySelector('#canvas')
+        //  2.获取画笔
+        let ctx = canvas.getContext('2d')
+        //  3.获取视频对象
+        let video = document.querySelector('video')
+        //  4.监听视频播放，绘制视频内容
+        let interId     //  声明周期函数容器，用来控制
+        video.onplay = () => {
+            //  周期函数画出所有帧
+            interId = setInterval(() => {
+                //  清空画布
+                ctx.clearRect(0,0,800,600)
+                //  填充黑色画布
+                ctx.fillRect(0,0,800,600)
+                //  画出内容
+                ctx.drawImage(video,0,70,800,440)
+                //  加水印
+                ctx.font = "20px 微软雅黑"
+                ctx.strokeStyle= "#999"
+                ctx.strokeText('Thever Wang',50,50)
+            }, 16);
+        }
+        //  视频暂停,停止绘图
+        video.pause = () => {
+            clearInterval(interId)
+        }
+
+        //  获取当前画布(0,0)位置,宽10,高10的数据
+        //  VM3786:1 Uncaught DOMException: Failed to execute 'getImageData' on 'CanvasRenderingContext2D': The canvas has been tainted by cross-origin data.
+        //  直接打开html用file协议查看默认是没有域名的，所以会认为该图片污染了canvas
+        //  在本地起服务，使用127.0.0.1的前缀方式来访问对应的资源即可
+        //  ctx.setImageDate()可以修改对应的像素点 --> 就是滤镜的介入
+         console.log(ctx.getImageData(0,0,10,10))
+    </script>
+</body>
+</html>

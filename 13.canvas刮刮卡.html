@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>canvas刮刮卡</title>
+        <style>
+            #ggk{
+                width:400px;
+                height:100px;
+                position:relative;
+            }
+            #ggk .jp{
+                width:400px;
+                height:100px;
+                line-height:100px;
+                text-align:center;
+                color:#000;
+                font-size:24px;
+                letter-spacing: 2px;
+                position:absolute;
+                left:0;
+                top:0;
+                z-index:1;
+                color:deeppink;
+            }
+            #ggk #canvas{
+                width:400px;
+                height:100px;
+                position:absolute;
+                left:0;
+                top:0;
+                z-index:9;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="ggk">
+            <div class="jp">谢谢惠顾</div>
+            <canvas id="canvas" width="400" height="100"></canvas>
+        </div>
+        <script>
+            //  获取画布
+            let canvas = document.querySelector('#canvas')
+            //  获取画笔
+            let ctx = canvas.getContext('2d')
+            //  填充灰色涂层
+            ctx.fillStyle = "darkgray"
+            ctx.fillRect(0,0,400,100)
+            //  添加文字
+            ctx.font = "20px 微软雅黑"
+            ctx.fillStyle = "#fff"
+            ctx.fillText('刮刮卡',180,50)
+            //  获取刮刮卡
+            let ggkDom = document.querySelector('#ggk')
+            //  获取奖品
+            let jpDom = document.querySelector('.jp')
+            //  刮刮卡原理，在目标图像上画圆(添加源图像)，利用globalCompositeOperation的destination-out属性让交互的区域透明即可
+            
+            //  参数是否允许绘制
+            let isDraw = false
+            
+            //  鼠标移动的时候绘制圆形，添加源图像
+            canvas.onmousemove = function(e){
+                // console.log(e)
+                //  点击才有效
+                if(isDraw){
+                    //  获取当前鼠标位置
+                    let x = e.pageX - ggkDom.offsetLeft
+                    let y = e.pageY - ggkDom.offsetTop
+                    //  设置交互透明
+                    ctx.globalCompositeOperation = 'destination-out'
+                    //  画当前鼠标位置，半径为20的圆
+                    ctx.arc(x,y,20,0,2*Math.PI)
+                    //  填充圆
+                    ctx.fill()
+                }
+            }
+            //  监听鼠标按下
+            canvas.onmousedown = function(){
+                isDraw = true
+            }
+            //  监听鼠标弹起
+            canvas.onmouseup = function(){
+                isDraw = false
+            }
+            
+            //  奖品源
+            let arr = [
+                {content:'一等奖苹果',rate:0.1},
+                {content:'二等奖华为',rate:0.2},
+                {content:'三等奖小米',rate:0.3},
+                {content:'谢谢惠顾',rate:0.4},
+            ]
+            //  随机值模拟抽奖
+            let randomNum = Math.random()
+            if(randomNum<arr[0]['rate']){
+                jpDom.innerHTML = arr[0].content 
+            }else if(randomNum<arr[0]['rate']+arr[1]['rate']){
+                jpDom.innerHTML = arr[1].content 
+            }else if(randomNum<arr[0]['rate']+arr[1]['rate']+arr[2]['rate']){
+                jpDom.innerHTML = arr[2].content 
+            }else{
+                jpDom.innerHTML = arr[3].content 
+            }
+        </script>
+    </body>
+</html>

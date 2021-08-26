@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>canvas实现画板功能</title>
+        <style>
+            *{
+                margin:0;
+                padding:0;
+                box-sizing: border-box;
+            }
+            body{
+                width:100vw;
+                height:100vh;
+                display:flex;
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+            .caidan{
+                height:100px;
+                width:100vw;
+                display:flex;
+                border-bottom:3px solid #ccc;
+                align-items: center;
+                justify-content: space-around;
+            }
+            .caidan .btn{
+                width:200px;
+                height:60px;
+                line-height:60px;
+                text-align:center;
+                border:1px solid #ccc;
+                border-radius:20px;
+                overflow:hidden;
+                color:#999;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+            .caidan .btn1, .caidan .btn2{
+                width:200px;
+                height:60px;
+                line-height:60px;
+                text-align:center;
+                border:1px solid #ccc;
+                border-radius:20px;
+                overflow:hidden;
+                color:#999;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+            .btn.active{
+                box-shadow: 0 0 20px deepskyblue;
+                border:1px solid deepskyblue;
+            }
+            .btn1.active{
+                box-shadow: 0 0 20px deepskyblue;
+                border:1px solid deepskyblue;
+            }
+            .caidan .paint{
+                background-image: url(img/huabi.png);
+                background-size:auto 100%;
+            }
+            #canvas{
+                flex:1;
+                width:100vh;
+            }
+            .line{
+                display:flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .thin:after{
+                content:'';
+                background-color:#333;
+                width:6px;
+                height:6px;
+                display:block;
+                border-radius:3px;
+                overflow:hidden;
+            }
+            .normal:after{
+                content:'';
+                background-color:#333;
+                width:16px;
+                height:16px;
+                display:block;
+                border-radius:8px;
+                overflow:hidden;
+            }
+            .bold:after{
+                content:'';
+                background-color:#333;
+                width:32px;
+                height:32px;
+                display:block;
+                border-radius:16px;
+                overflow:hidden;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 画笔功能：能够拖动鼠标在页面内绘图，能够设置画笔的粗细
+        能够在任意位置绘制圆形:拖动鼠标即可随意在任意位置绘制圆形，并且可以随意定制大小
+        能够在任意位置绘制出矩形:拖动鼠标即可随意在任意位置绘制圆形，并且可以随意定制大小 -->
+        <div class="caidan">
+            <div class="btn paint" id="huabi"></div>
+            <div class="btn" id="rect">矩形</div>
+            <div class="btn">圆形</div>
+            <div class="btn">橡皮擦</div>
+            <div class="btn2 download">下载图片</div>
+            <div class="btn1 line thin active"></div>
+            <div class="btn1 line normal"></div>
+            <div class="btn1 line bold"></div>
+            <div class="btn">
+                <input type="color" id="color" value="#000000"/>
+            </div>
+        </div>
+        <canvas id="canvas"></canvas>
+        <script>
+            //  获取画布
+            let canvas = document.querySelector("#canvas")
+            
+            //  获取画笔
+            let ctx = canvas.getContext('2d')
+            
+            //  设置canvas的宽高
+            canvas.setAttribute('width', canvas.offsetWidth)
+            canvas.setAttribute('height', canvas.offsetHeight)
+            
+            //  获取所有按钮
+            let allBtn = document.querySelectorAll('.btn')
+            
+            //  设置画板
+            let huaban = {
+                type:'none',
+                //  不允许画
+                isDraw:false,
+                //  记录画笔的起始路径
+                beginX:0,
+                beginY:0,
+                //  线段宽度
+                lineWidth:6,
+                //  线条颜色
+                color:'#000',
+                //  保留数据
+                imageData:null,
+                //  画笔
+                huabiFn:function(e){
+                    //  获取对应点的画布位置
+                    let x = e.pageX - canvas.offsetLeft
+                    let y = e.pageY - canvas.offsetTop
+                    // 画圆来画路径
+                    // ctx.beginPath()             //  开启路径
+                    // ctx.arc(x,y,5,0,2*Math.PI)  //  鼠标当前位置，半径为5,0到360度的圆
+                    // ctx.fill()                  //  填充
+                    // ctx.closePath()             //  关闭路径
+                    ctx.lineTo(x,y)                //  移动路径
+                    ctx.strokeStyle = huaban.color  //  设置画笔颜色
+                    ctx.lineCap = 'round'          //  结束端点柔和
+                    ctx.lineJoin = 'round'         //  拐角柔和
+                    ctx.lineWidth = huaban.lineWidth    //  设置路径宽度
+                    ctx.stroke()                //  绘制路径
+                },
+                //  画矩形
+                rectFn:function(e){
+                    //  获取对应点的画布位置
+                    let x = e.pageX - canvas.offsetLeft
+                    let y = e.pageY - canvas.offsetTop
+                    ctx.clearRect(0,0,canvas.offsetWidth,canvas.offsetHeight)//  清空矩形
+                    if(huaban.imageData != null){
+                       //   存储有数据再填充
+                       ctx.putImageData(huaban.imageData,0,0,0,0,canvas.offsetWidth,canvas.offsetHeight)
+                    }
+                    ctx.beginPath()     //  开始路径
+                    ctx.rect(huaban.beginX,huaban.beginY,x-huaban.beginX, y-huaban.beginY)  //  起始点位置，绘制距离当前点距离宽高的矩形
+                    ctx.strokeStyle = huaban.color  //  设置画笔颜色
+                    // ctx.fill()          //  填充
+                    ctx.stroke()          //  填充        
+                    ctx.closePath()     //  关闭路径         
+                }
+            }
+            
+            //  画笔点击事件
+            let huabiBtn = document.querySelector('#huabi')
+            huabiBtn.onclick = function(){
+                allBtn.forEach(function(item,i){
+                    item.classList.remove('active')
+                })
+                huabiBtn.classList.add('active')
+                huaban.type = 'huabi'
+            }
+            
+            //  矩形点击事件
+            let rectBtn = document.querySelector('#rect')
+            rectBtn.onclick = function(){
+                allBtn.forEach(function(item,i){
+                    item.classList.remove('active')
+                })
+                rectBtn.classList.add('active')
+                huaban.type = 'rect'
+            }
+            
+            //  设置粗细的按钮
+            let lineDivs = document.querySelectorAll('.line')
+            lineDivs.forEach(function(item,i){
+                item.onclick = function(){
+                    //  全部移除class actvie
+                    lineDivs.forEach(function(a,b){
+                        a.classList.remove('active')
+                    })
+                    //  当前class line 添加active
+                    item.classList.add('active')
+                    if(i == 0){
+                        huaban.lineWidth = 6
+                        return
+                    }
+                    if(i == 1){
+                        huaban.lineWidth = 16
+                        return
+                    }
+                    if(i == 2){
+                        huaban.lineWidth = 32
+                        return
+                    }
+                }
+            })
+            
+            //  监听颜色设置改变事件
+            let colorInput = document.querySelector('#color')
+            colorInput.onchange = function(e){
+                huaban.color = colorInput.value
+            }
+            
+            //  监听处理下载按钮
+            let downloadBtn = document.querySelector('.download')
+            downloadBtn.onclick = function(){
+                //  将画布内的内容转换成Base64地址
+                let url = canvas.toDataURL()
+                console.log(url)
+                
+                // //  创建图片对象
+                // let img = new Image()
+                // //  将base64的数据保存到图片中
+                // img.src = url
+                
+                //  用a标签来下载
+                let link = document.createElement('a')
+                link.setAttribute('download','')
+                link.setAttribute('href', url)
+                link.click()
+            }
+            
+            //  监听画布鼠标按下事件
+            canvas.onmousedown = function(e){
+                //  允许画
+                huaban.isDraw = true
+                //  如果是画笔,用点位置来绘制路径
+                if(huaban.type == 'huabi'){
+                    //  设置起始点和结束点
+                    let x = e.pageX - canvas.offsetLeft
+                    let y = e.pageY - canvas.offsetTop
+                    huaban.beginX = x
+                    huaban.beginY = y
+                    ctx.beginPath()     //  开始绘制路径
+                    ctx.moveTo(x,y)     //  移动画笔到鼠标按下位置
+                }
+                //  如果是画矩形
+                if(huaban.type == 'rect'){
+                    //  设置起始点和结束点
+                    let x = e.pageX - canvas.offsetLeft
+                    let y = e.pageY - canvas.offsetTop
+                    huaban.beginX = x
+                    huaban.beginY = y
+                }
+                
+            }
+            
+            //  监听画布鼠标抬起事件
+            canvas.onmouseup = function(){
+                //  保留数据
+                huaban.imageData = ctx.getImageData(0,0,canvas.offsetWidth,canvas.offsetHeight)
+                //  不允许画
+                huaban.isDraw = false
+                //  如果是画笔
+                if(huaban.type == 'huabi'){
+                   //   关闭路径
+                   ctx.closePath()
+                }
+            }
+            
+            //  监听画布鼠标移动
+            canvas.onmousemove = function(e){
+                //  判断能否画
+                if(huaban.isDraw){
+                    //  执行对应内容
+                    let method = huaban.type+'Fn'
+                    huaban[method](e)
+                }
+            }
+        </script>
+    </body>
+</html>

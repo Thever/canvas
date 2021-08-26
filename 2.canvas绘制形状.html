@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>canvas绘制形状</title>
+</head>
+<body>
+    <canvas id="canvas1" width="600" height="600"></canvas>
+    <script>
+        //  1.找到画布对象
+        let canvas1 = document.querySelector('#canvas1')
+        //  2.获得画笔
+        let ctx = canvas1.getContext('2d') 
+        //  3.设置开始路径
+        ctx.beginPath()
+        //  4.设置起始点
+        ctx.moveTo(50,50)
+        //  5.经过位置
+        ctx.lineTo(50,300)
+        ctx.lineTo(300,100)
+        ctx.lineTo(300,250)
+        //  6.设置结束路径
+        ctx.closePath()
+        //  7.绘制路径
+        ctx.strokeStyle = "aqua"    //  指定路径颜色青色
+        ctx.lineCap = "round"       //  设置起始点和终点为圆角
+        // ctx.lineJoin = "round"   //  设置拐角为圆角
+        ctx.miterLimit = 2          //  设置尖锐的角度为2  
+        ctx.lineWidth = 20          //  指定路径宽度10
+        ctx.stroke()                //  绘制路径
+    </script>
+</body>
+</html>

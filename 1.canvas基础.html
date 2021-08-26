@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>canvas基础</title>
+</head>
+<body>
+    <h3>canvas</h3>
+    <!-- canvas三要素：id作为唯一的标识 width画布宽度像素 height画布高度像素 -->
+    <!-- canvas只是画布标签，要用JS来绘制内容,canvas 自带的 width, height 属性与 css 中的 width height 不同 -->
+    <!-- canvas自带的width，height表示画布的分辨率 -->
+    <!-- css的width,height表示canvas这个标签所占的大小 -->
+    <!-- 画布会根据canvas标签大小来自适应拉伸，可以用内容的默认宽高来设置canvas属性，来提高清晰度 -->
+    <canvas id="canvas1" width="600" height="600">
+        canvas正常画布是不显示内容的，不过浏览器不支持canvas或者不识别canvas标签就会显示了
+    </canvas>
+</body>
+<script>
+    //  canvas1中绘制内容
+    //  1.找到画布对象
+    let canvas1 = document.querySelector('#canvas1')
+    console.log([canvas1])
+
+    //  2.上下文对象(画笔)
+    let ctx = canvas1.getContext('2d')    //  使用2d引擎
+    console.log(ctx)
+
+    //  3.绘制矩形
+    ctx.rect(50,50,300,300)     //  坐标50,50 宽300 高300
+
+    //  4.填充内容
+    ctx.fillStyle = "aqua"      //  设置填充颜色
+    ctx.fill()                  //  填充颜色
+
+    //  5.渲染路径
+    ctx.strokeStyle = 'salmon'    //  设置路径颜色
+    ctx.lineWidth = 20            //  设置线段宽度20
+    ctx.stroke()                  //  渲染路径描边
+</script>
+</html>

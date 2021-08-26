@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>canvas处理图像</title>
+    </head>
+    <body>
+        <!--
+            784*65000
+        	集合了65000张手写的数字图片，一行拼接起来算一张
+        	784 = 28*28,可以拼接出一张手写图片
+        -->
+        <!-- 显示数字 -->
+        <canvas id="c2" width="600" height="600"></canvas>
+        <!-- 显示所有的图片 -->
+        <canvas id="c1" width="784" height="65000"></canvas>
+        <script>
+            //  获取画布
+            let c1 = document.querySelector('#c1')
+            let c2 = document.querySelector('#c2')
+            //  获取画笔
+            let c1Cxt = c1.getContext('2d')
+            let c2Cxt = c2.getContext('2d')
+            //  创建图像
+            let img = new Image()
+            img.src="img/mnist_images.png"
+            //  监听图像载入
+            //  画出第一条数据
+            // img.onload = () => {
+            //     //  c1画出全部内容
+            //     c1Cxt.drawImage(img,0,0)
+            //     //  c1提取第一行内容
+            //     let imgData = c1Cxt.getImageData(0,0,784,1)
+            //     console.log(imgData)
+            //     //  创建对象接受内容
+            //     let imgData2 = c2Cxt.createImageData(28,28)
+            //     console.log(imgData2)
+            //     //  循环填充内容
+            //     for(let i = 0; i < 784*4; i++){
+            //         imgData2.data[i] = imgData.data[i]
+            //     }
+            //     console.log(imgData2)
+            //     //  画笔画出内容
+            //     c2Cxt.putImageData(imgData2,0,0,0,0,28,28)
+            // }
+            //  画出多条数据
+            img.onload = () => {
+                //  c1画出全部内容
+                c1Cxt.drawImage(img,0,0)
+                //  根据行数来获取对应内容
+                for(let j = 0; j < 10; j++){
+                    //  获取当前行的内容
+                    let imgData = c1Cxt.getImageData(0,j,784,1)
+                    //  创建获取内容的对象
+                    let imgData2 = c2Cxt.createImageData(28,28)
+                    //  循环填充内容
+                    for(let i = 0; i < 784*4; i++){
+                        imgData2.data[i] = imgData.data[i]
+                    }
+                    //  对应位置填充内容
+                    c2Cxt.putImageData(imgData2,0,j*28,0,0,28,28)
+                }
+            }
+        </script>
+    </body>
+</html>

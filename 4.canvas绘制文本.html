@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>canvas绘制文本</title>
+</head>
+<body>
+    <canvas id="canvas1" width="600" height="600"></canvas>
+    <script>
+        //  1.获取画布
+        let canvas1 = document.querySelector('#canvas1')
+        //  2.获取画笔
+        let ctx = canvas1.getContext('2d')
+        //  3.设置字体属性
+        ctx.font = '50px 微软雅黑'
+        //  4.设置内容阴影
+        ctx.shadowBlur = 20  // 阴影宽度
+        ctx.shadowColor = 'rgba(0,0,0,1)'   // 阴影颜色
+        ctx.shadowOffsetX = 10  // 阴影X轴偏移值
+        ctx.shadowOffsetY = 10  // 阴影Y轴偏移值
+        //  5.设置填充字体
+        // ctx.fillText('hello world', 100, 100)   // 内容，位置
+        //  6.设置描边内容
+        // ctx.strokeText('中午吃啥？',100, 200)    // 内容，位置
+        //  7.模拟弹幕
+        let x = 600
+        setInterval(() => {
+            // 清空画布
+            ctx.clearRect(0,0,600,600)  // 清除的左上角的x，y坐标，x轴长度，y轴长度
+            // 绘制新内容
+            x-=1
+            ctx.fillText('hello world', x, 100)
+            ctx.strokeText('中午吃啥？',x, 200)
+            // 循环弹幕
+            if(x < -300){
+                x = 600
+            }
+        },16)
+    </script>
+</body>
+</html>

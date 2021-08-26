@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>canvas旋转</title>
+    </head>
+    <body>
+        <canvas id="canvas" width="800" height="600"></canvas>
+        <script>
+            //  获取画布
+            let canvas = document.querySelector('#canvas')
+            //  获取画笔
+            let ctx = canvas.getContext('2d')
+            //  坐标轴旋转45度
+            ctx.rotate(0.25*Math.PI)
+            //  设置填充样式
+            ctx.fillStyle = "deepskyblue"
+            //  填充矩形路径
+            ctx.fillRect(100,0,300,100)
+        </script>
+    </body>
+</html>

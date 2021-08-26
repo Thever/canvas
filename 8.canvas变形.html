@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>canvas变形</title>
+    </head>
+    <body>
+        <canvas id="canvas" width="800" height="600"></canvas>
+        <script>
+            //  获取画布
+            let canvas = document.querySelector('#canvas')
+            //  获取画笔
+            let ctx = canvas.getContext('2d')
+            //  坐标原点(0,0)左边水平移动300，垂直移动0
+            //  整个坐标轴进行移动
+            ctx.translate(300,0)
+            //  设置填充样式
+            ctx.fillStyle = "deepskyblue"
+            //  填充矩形路径
+            ctx.fillRect(100,100,300,100)
+            //  画原点红色
+            ctx.fillStyle = "hotpink"
+            ctx.fillRect(0,0,100,100)
+        </script>
+    </body>
+</html>

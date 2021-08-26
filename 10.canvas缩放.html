@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>canvas缩放</title>
+    </head>
+    <body>
+        <canvas id="canvas" width="800" height="600"></canvas>
+        <script>
+            //  获取画布
+            let canvas = document.querySelector('#canvas')
+            //  获取画笔
+            let ctx = canvas.getContext('2d')
+            //  设置填充样式
+            ctx.fillStyle = "hotpink"
+            //  填充矩形路径
+            ctx.fillRect(0,0,100,100)
+            //  保留画笔状态(环境的状态)
+            ctx.save()
+            
+            //  坐标轴x轴变为2倍，y轴变为4倍
+            ctx.scale(2,4)
+            ctx.fillStyle = "deepskyblue"
+            ctx.fillRect(100,0,300,100)
+            ctx.save()
+            
+            // 恢复之前保留的画笔状态
+            // restore只恢复一次save的状态
+            ctx.restore()
+            ctx.restore()
+            ctx.fillStyle = "hotpink"
+            ctx.fillRect(0,150,100,100)
+        </script>
+    </body>
+</html>

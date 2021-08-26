@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>canvas绘制图像</title>
+</head>
+<body>
+    <canvas id="canvas" width="600" height="600">
+        您的浏览器不支持canvas标签
+    </canvas>
+    <script>
+        //  1.获取画布
+        let canvas = document.querySelector('#canvas')
+        //  2.获取画笔
+        let ctx = canvas.getContext('2d')
+        //  3.绘制图像
+        let img = new Image()   //  声明图片对象
+        img.src = './img/jojo.jpg'  //  声明图片路径
+
+        let img2 = new Image()   //  声明图片对象
+        img2.src = './img/jojo2.jpg'  //  声明图片路径
+
+        //  ctx.drawImage(图片对象,图片放置的x,y位置)
+        //  ctx.drawImage(图片对象,图片放置的x,y位置,绘制图片的宽度,高度)
+        //  ctx.drawImage(图片对象,图像裁剪的位置x,图像裁剪的位置y,图像裁剪的宽度,图像裁剪的高度，图片放置的x，y位置,绘制图片的宽度,高度)
+        //  对于画布上相同的位置，后面绘制的内容会替换原先绘制的,所以这里要进行错位
+        //  图片请求完成后渲染
+        img.onload = () => {
+            ctx.drawImage(img, 50, 50)     //  图片对象,图片放置的x,y位置
+        }
+         //  图片请求完成后渲染
+        img2.onload = () => {
+            //  图片拉伸
+            // ctx.drawImage(img2, 100, 200, 100, 100)     //  图片对象,图片放置的x,y位置,绘制图片的宽度,高度
+            //  图片裁剪拉伸
+            ctx.drawImage(img2,0,0,110,110,100,200,100,100)     //  图片对象,图像裁剪的位置x,图像裁剪的位置y,图片放置的x，y位置,绘制图片的宽度,高度
+            //  添加水印
+            ctx.font = '12px 微软雅黑'
+            ctx.fillText('Thever Wang',100,200)
+        }
+        
+        //  当然你也可以手动控制监听,优先载入img,再载入img2进行替换
+        // img.onload = () => {
+        //     ctx.drawImage(img, 50, 50)     
+        //     img2.onload = () => {
+        //         ctx.drawImage(img2, 50, 50)     
+        //     }
+        // }
+    </script>
+</body>
+</html>

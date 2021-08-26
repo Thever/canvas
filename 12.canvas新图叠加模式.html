@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>canvas新图叠加模式</title>
+    </head>
+    <body>
+        <canvas id="canvas" width="800" height="600"></canvas>
+        <script>
+            //  获取画布
+            let canvas = document.querySelector('#canvas')
+            //  获取画笔
+            let ctx = canvas.getContext('2d')
+            
+            //  第一个红色矩形为目标图像(已存在的图像)
+            ctx.fillStyle = "hotpink"        //  设置颜色
+            ctx.fillRect(100,100,200,200)    //  宽高100，位置(200,200)的矩形
+             //  globalCompositeOperation默认值为source-over,源图像叠加在目标图像上方
+            ctx.globalCompositeOperation = 'destination-out'
+            console.log(ctx)
+           
+            //  第二个蓝色矩形为源图像(打算放上去覆盖的图像)
+            ctx.fillStyle = "deepskyblue"    //  设置颜色
+            ctx.fillRect(200,200,200,200)    //  宽高200，位置(200,200)的矩形
+        </script>
+    </body>
+</html>
